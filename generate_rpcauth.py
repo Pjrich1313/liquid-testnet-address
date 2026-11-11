@@ -43,11 +43,13 @@ def main():
     print("\nTest with:")
     print(f"elements-cli -rpcuser={args.username} -rpcpassword={password} getblockchaininfo")
     
-    # Also write to file
-    with open("rpcauth.conf", "w") as f:
-        f.write("# Add this to ~/.elements/elements.conf\n")
+    # Local output only. Do not overwrite the tracked placeholder rpcauth.conf.
+    # elements.conf, *.conf, and .env are gitignored.
+    out_path = "rpcauth.local.conf"
+    with open(out_path, "w") as f:
+        f.write("# Local only. Do not commit. Copy the rpcauth line into elements.conf.\n")
         f.write(rpcauth + "\n")
-    print("\nAlso saved to rpcauth.conf")
+    print(f"\nAlso saved to {out_path} (gitignored — do not commit; copy the line into elements.conf)")
 
 if __name__ == "__main__":
     main()

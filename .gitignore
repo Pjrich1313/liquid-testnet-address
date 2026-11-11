@@ -1,0 +1,5 @@
+# Real RPC credentials belong in a local elements.conf that is not committed.
+elements.conf
+*.conf
+.env
+.env.*

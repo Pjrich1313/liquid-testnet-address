@@ -47,7 +47,9 @@ Download latest: https://github.com/ElementsProject/elements/releases
 
 ### Recommended: Use `rpcauth` (hashed password)
 
-Add to `~/.elements/elements.conf` (testnet):
+Keep real RPC credentials in a local `elements.conf` (typically `~/.elements/elements.conf`). Do not commit that file. This repository ignores `elements.conf`, other `*.conf` files that can hold secrets (including `rpcauth.local.conf` written by `generate_rpcauth.py`), and `.env`. The tracked `rpcauth.conf` file is a placeholder only.
+
+Add this to your local `elements.conf` (testnet), using your own generated values:
 
 ```conf
 testnet=1
@@ -58,22 +60,35 @@ rpcbind=127.0.0.1
 rpcallowip=127.0.0.1
 rpcport=18884
 
-# Generated rpcauth:
-rpcauth=liquidtestuser:26207a38c6756066b3a0aadc5862484c$3f1a... (example - use your own)
+# Generated rpcauth — replace with your own; never commit the real line:
+rpcauth=<your-rpc-username>:<your-rpcauth-salt>$<your-rpcauth-hash>
 ```
 
-**Your generated credentials** (example):
-- Username: `liquidtestuser`
-- Password: `41ee13dea6479e312d3fa73ffd893e1697bddc80041313c943bdb4ebcbb70c34`
+**Credentials** (placeholders only; store the real values in local `elements.conf`):
+- Username: `<your-rpc-username>`
+- Password: `<your-rpc-password>`
 
 **Full rpcauth line:**
-`rpcauth=liquidtestuser:26207a38c6756066b3a0aadc5862484c$...`
+`rpcauth=<your-rpc-username>:<your-rpcauth-salt>$<your-rpcauth-hash>`
 
-Replace with your own generated values for security.
+Generate a line with this repo's script (a random password is used unless you pass `-p`):
+
+```bash
+python3 generate_rpcauth.py -u <your-rpc-username>
+```
+
+Copy the printed `rpcauth=` line into the node's local `elements.conf`. The script also writes `rpcauth.local.conf` in the working directory; that file is gitignored and must stay uncommitted.
+
+### Rotate your RPC password
+
+1. Generate a new `rpcauth` line with `python3 generate_rpcauth.py` (or pass a strong random password with `-p`).
+2. Put that line in the node's `elements.conf`, replacing any previous `rpcauth` or `rpcpassword` entry. Keep `elements.conf` local and uncommitted.
+3. Restart `elementsd`.
+4. Update any clients so they use the new username and password.
 
 ### Test
 ```bash
-elements-cli getblockchaininfo
+elements-cli -rpcuser=<your-rpc-username> -rpcpassword=<your-rpc-password> getblockchaininfo
 ```
 
 ---
