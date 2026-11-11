@@ -9,4 +9,4 @@ venv/
 .git
 .gitignore
 README.md
-rpcauth.conf
+*.conf
